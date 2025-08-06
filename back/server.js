@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -9,29 +10,43 @@ app.use(express.json());
 // CORS middleware to allow cross-origin requests
 app.use(cors());
 
-// Simple bot logic - just moves randomly
-function getBotAction() {
-  const moves = ['UP', 'DOWN', 'LEFT', 'RIGHT', 'STAY'];
-  const randomMove = moves[Math.floor(Math.random() * moves.length)];
-  
-  return {
-    move: randomMove,
-    action: 'COLLECT'
-  };
+// Serve static files from frontend
+app.use(express.static(path.join(__dirname, '../front')));
+
+// Bot state - stores the current move and action
+let botState = {
+  move: 'STAY',
+  action: 'COLLECT'
+};
+
+// Function to update bot state
+function updateBotState(move, action = 'COLLECT') {
+  botState.move = move;
+  botState.action = action;
+  return botState;
 }
 
-// GET /action - returns the bot's next action
+// GET /action - returns the current bot action
 app.get('/action', (req, res) => {
-  const action = getBotAction();
-  res.json(action);
+  res.json(botState);
 });
 
-// POST /action - receives game data and returns bot action
+// POST /action - receives move command and updates bot state
 app.post('/action', (req, res) => {
-  // For now, we ignore the game data and just return a random action
-  // This is a simple bot that doesn't use game state
-  const action = getBotAction();
-  res.json(action);
+  const { move, action } = req.body;
+  
+  // Validate move
+  const validMoves = ['UP', 'DOWN', 'LEFT', 'RIGHT', 'STAY'];
+  if (move && validMoves.includes(move)) {
+    updateBotState(move, action || 'COLLECT');
+  }
+  
+  res.json(botState);
+});
+
+// Serve the controller page
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../front/index.html'));
 });
 
 // Health check endpoint
