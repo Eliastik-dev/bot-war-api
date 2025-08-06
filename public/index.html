@@ -110,9 +110,14 @@
             <pre id="lastResponse">No response yet</pre>
         </div>
 
-        <button onclick="getCurrentAction()" style="padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">
-            🔄 Get Current Action
-        </button>
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <button onclick="getCurrentAction()" style="padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                🔄 Get Current Action
+            </button>
+            <button onclick="resetBot()" style="padding: 10px 20px; background: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                🔄 Reset Bot
+            </button>
+        </div>
     </div>
 
     <script>
@@ -147,6 +152,21 @@
                 const data = await response.json();
                 document.getElementById('lastResponse').textContent = JSON.stringify(data, null, 2);
                 updateActionDisplay(data.move, data.action);
+            } catch (error) {
+                document.getElementById('lastResponse').textContent = `Error: ${error.message}`;
+            }
+        }
+
+        async function resetBot() {
+            try {
+                const response = await fetch(`${API_BASE}/reset`, { method: 'POST' });
+                const data = await response.json();
+                document.getElementById('lastResponse').textContent = JSON.stringify(data, null, 2);
+                
+                // Reset display
+                document.getElementById('currentAction').textContent = 'STAY / NONE';
+                document.getElementById('botPosition').textContent = 'X: 0, Y: 0';
+                document.getElementById('botScore').textContent = '0';
             } catch (error) {
                 document.getElementById('lastResponse').textContent = `Error: ${error.message}`;
             }

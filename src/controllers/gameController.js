@@ -1,7 +1,12 @@
 const BotLogic = require('../services/botLogic');
 
-// Simple bot instance
-const bot = new BotLogic();
+// Global bot instance - shared between all requests
+let bot = new BotLogic();
+
+// Function to reset bot (useful for testing)
+const resetBot = () => {
+  bot = new BotLogic();
+};
 
 // GET /action - Get the next action for the bot
 const getAction = (req, res) => {
@@ -89,5 +94,6 @@ const postKeyboard = (req, res) => {
 module.exports = {
   getAction,
   postCommand,
-  postKeyboard
+  postKeyboard,
+  resetBot
 }; 

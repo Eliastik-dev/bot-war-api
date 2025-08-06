@@ -14,6 +14,7 @@ app.use(express.static('public'));
 app.get('/action', gameController.getAction);
 app.post('/command', gameController.postCommand);
 app.post('/keyboard', gameController.postKeyboard);
+app.post('/reset', gameController.resetBot);
 
 // Health check route
 app.get('/health', (req, res) => {
