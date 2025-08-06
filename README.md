@@ -13,7 +13,6 @@ A keyboard-controlled bot for the BotWar game that collects points in a randomly
 
 - `GET /action`: Returns the current bot action
 - `POST /action`: Receives move command and updates bot state
-- `GET /health`: Health check endpoint
 - `GET /`: Serves the keyboard controller interface
 
 ## Project Structure

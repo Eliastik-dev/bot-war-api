@@ -28,10 +28,7 @@ describe('BotWar Bot API', () => {
     expect(response.body).toHaveProperty('action');
   });
 
-  test('GET /health should return OK status', async () => {
-    const response = await request(app).get('/health').expect(200);
-    expect(response.body).toEqual({ status: 'OK', message: 'Bot is running' });
-  });
+
 
   test('GET / should serve the controller page', async () => {
     const response = await request(app).get('/').expect(200);

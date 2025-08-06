@@ -30,9 +30,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../front/index.html'));
 });
 
-app.get('/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Bot is running' });
-});
+
 
 if (require.main === module) {
   app.listen(port, () => {
