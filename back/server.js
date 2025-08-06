@@ -1,9 +1,13 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3000;
 
 // Middleware to parse JSON
 app.use(express.json());
+
+// CORS middleware to allow cross-origin requests
+app.use(cors());
 
 // Simple bot logic - just moves randomly
 function getBotAction() {
