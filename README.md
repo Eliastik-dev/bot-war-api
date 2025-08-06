@@ -92,10 +92,8 @@ Get the next action for the bot.
 **Response:**
 ```json
 {
-  "success": true,
-  "action": "UP",
-  "timestamp": "2024-01-01T12:00:00.000Z",
-  "message": "Bot decided to: UP"
+  "move": "UP",
+  "action": "COLLECT"
 }
 ```
 

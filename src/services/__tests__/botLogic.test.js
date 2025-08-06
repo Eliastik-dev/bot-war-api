@@ -17,6 +17,30 @@ describe('BotLogic', () => {
     });
   });
 
+  describe('getNextMoveAction', () => {
+    test('should return a valid move action', () => {
+      const action = bot.getNextMoveAction();
+      expect(bot.moveActions).toContain(action);
+    });
+
+    test('should update lastMoveAction', () => {
+      const action = bot.getNextMoveAction();
+      expect(bot.lastMoveAction).toBe(action);
+    });
+  });
+
+  describe('getNextGameAction', () => {
+    test('should return a valid game action', () => {
+      const action = bot.getNextGameAction();
+      expect(bot.actionActions).toContain(action);
+    });
+
+    test('should update lastGameAction', () => {
+      const action = bot.getNextGameAction();
+      expect(bot.lastGameAction).toBe(action);
+    });
+  });
+
   describe('getNextAction', () => {
     test('should return a valid action', () => {
       const action = bot.getNextAction();

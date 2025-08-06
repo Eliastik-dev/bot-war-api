@@ -3,18 +3,20 @@ const app = require('../../index');
 
 describe('Game Controller', () => {
   describe('GET /action', () => {
-    test('should return a valid action response', async () => {
+    test('should return a valid action response with move and action properties', async () => {
       const response = await request(app)
         .get('/action')
         .expect(200);
 
-      expect(response.body).toHaveProperty('success', true);
+      expect(response.body).toHaveProperty('move');
       expect(response.body).toHaveProperty('action');
-      expect(response.body).toHaveProperty('timestamp');
-      expect(response.body).toHaveProperty('message');
+      
+      // Check if move is valid
+      const validMoves = ['UP', 'DOWN', 'LEFT', 'RIGHT', 'STAY'];
+      expect(validMoves).toContain(response.body.move);
       
       // Check if action is valid
-      const validActions = ['UP', 'DOWN', 'LEFT', 'RIGHT', 'STAY', 'COLLECT', 'NONE', 'ATTACK'];
+      const validActions = ['COLLECT', 'NONE', 'ATTACK'];
       expect(validActions).toContain(response.body.action);
     });
   });

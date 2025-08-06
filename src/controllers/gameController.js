@@ -7,17 +7,15 @@ const bot = new BotLogic();
 const getAction = (req, res) => {
   try {
     // Get the next action from bot logic
-    const action = bot.getNextAction();
+    const moveAction = bot.getNextMoveAction();
+    const gameAction = bot.getNextGameAction();
     
     res.json({
-      success: true,
-      action: action,
-      timestamp: new Date().toISOString(),
-      message: `Bot decided to: ${action}`
+      move: moveAction,
+      action: gameAction
     });
   } catch (error) {
     res.status(500).json({
-      success: false,
       error: 'Failed to get bot action',
       message: error.message
     });
