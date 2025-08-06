@@ -73,10 +73,22 @@ class BotLogic {
     const moveAction = keyMap[key];
     if (moveAction) {
       if (this.moveActions.includes(moveAction)) {
-        // It's a move action
+        // It's a move action - update position immediately
         this.currentMoveAction = moveAction;
         this.lastMoveAction = moveAction;
         this.lastAction = moveAction;
+        
+        // Update position based on move action
+        if (moveAction === 'UP') {
+          this.position.y -= 1;
+        } else if (moveAction === 'DOWN') {
+          this.position.y += 1;
+        } else if (moveAction === 'LEFT') {
+          this.position.x -= 1;
+        } else if (moveAction === 'RIGHT') {
+          this.position.x += 1;
+        }
+        // STAY doesn't change position
       } else if (this.actionActions.includes(moveAction)) {
         // It's a game action
         this.currentGameAction = moveAction;

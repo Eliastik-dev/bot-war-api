@@ -54,10 +54,23 @@ describe('BotLogic', () => {
   });
 
   describe('processKeyboardInput', () => {
-    test('should handle arrow keys', () => {
+    test('should handle arrow keys and update position', () => {
       const result = bot.processKeyboardInput('ArrowUp');
       expect(bot.currentMoveAction).toBe('UP');
       expect(result.currentMoveAction).toBe('UP');
+      expect(bot.position.y).toBe(-1);
+      expect(result.position.y).toBe(-1);
+    });
+
+    test('should handle all direction keys', () => {
+      bot.processKeyboardInput('ArrowDown');
+      expect(bot.position.y).toBe(1);
+      
+      bot.processKeyboardInput('ArrowLeft');
+      expect(bot.position.x).toBe(-1);
+      
+      bot.processKeyboardInput('ArrowRight');
+      expect(bot.position.x).toBe(0);
     });
 
     test('should handle action keys', () => {

@@ -96,6 +96,16 @@
         </div>
 
         <div class="status">
+            <h3>Bot Position:</h3>
+            <div class="action-display" id="botPosition">X: 0, Y: 0</div>
+        </div>
+
+        <div class="status">
+            <h3>Bot Score:</h3>
+            <div class="action-display" id="botScore">0</div>
+        </div>
+
+        <div class="status">
             <h3>Last Response:</h3>
             <pre id="lastResponse">No response yet</pre>
         </div>
@@ -124,6 +134,7 @@
                 // Update current action display
                 if (data.success) {
                     updateActionDisplay(data.result.currentMoveAction, data.result.currentGameAction);
+                    updateBotInfo(data);
                 }
             } catch (error) {
                 document.getElementById('lastResponse').textContent = `Error: ${error.message}`;
@@ -143,6 +154,17 @@
 
         function updateActionDisplay(move, action) {
             document.getElementById('currentAction').textContent = `${move} / ${action}`;
+        }
+
+        function updateBotInfo(data) {
+            if (data.result) {
+                // Update position
+                const pos = data.result.position;
+                document.getElementById('botPosition').textContent = `X: ${pos.x}, Y: ${pos.y}`;
+                
+                // Update score
+                document.getElementById('botScore').textContent = data.result.score;
+            }
         }
 
         // Keyboard event listeners
