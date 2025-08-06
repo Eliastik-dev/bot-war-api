@@ -41,6 +41,37 @@ describe('BotLogic', () => {
     });
   });
 
+  describe('getCurrentMoveAction', () => {
+    test('should return current move action', () => {
+      expect(bot.getCurrentMoveAction()).toBe('STAY');
+    });
+  });
+
+  describe('getCurrentGameAction', () => {
+    test('should return current game action', () => {
+      expect(bot.getCurrentGameAction()).toBe('NONE');
+    });
+  });
+
+  describe('processKeyboardInput', () => {
+    test('should handle arrow keys', () => {
+      const result = bot.processKeyboardInput('ArrowUp');
+      expect(bot.currentMoveAction).toBe('UP');
+      expect(result.currentMoveAction).toBe('UP');
+    });
+
+    test('should handle action keys', () => {
+      const result = bot.processKeyboardInput('c');
+      expect(bot.currentGameAction).toBe('COLLECT');
+      expect(result.currentGameAction).toBe('COLLECT');
+    });
+
+    test('should handle unknown keys', () => {
+      const result = bot.processKeyboardInput('x');
+      expect(result.message).toContain('unknown');
+    });
+  });
+
   describe('getNextAction', () => {
     test('should return a valid action', () => {
       const action = bot.getNextAction();

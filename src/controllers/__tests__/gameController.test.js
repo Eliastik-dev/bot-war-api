@@ -61,6 +61,32 @@ describe('Game Controller', () => {
     });
   });
 
+  describe('POST /keyboard', () => {
+    test('should process keyboard input', async () => {
+      const key = 'ArrowUp';
+      
+      const response = await request(app)
+        .post('/keyboard')
+        .send({ key })
+        .expect(200);
+
+      expect(response.body).toHaveProperty('success', true);
+      expect(response.body).toHaveProperty('result');
+      expect(response.body).toHaveProperty('message');
+      expect(response.body.message).toContain(key);
+    });
+
+    test('should handle missing key', async () => {
+      const response = await request(app)
+        .post('/keyboard')
+        .send({})
+        .expect(400);
+
+      expect(response.body).toHaveProperty('success', false);
+      expect(response.body).toHaveProperty('error');
+    });
+  });
+
   describe('GET /health', () => {
     test('should return health status', async () => {
       const response = await request(app)

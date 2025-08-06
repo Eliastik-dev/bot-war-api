@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BotWar Controller</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .control-btn {
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .control-btn:hover {
+            background: #0056b3;
+        }
+        .control-btn:active {
+            transform: scale(0.95);
+        }
+        .center-btn {
+            grid-column: 2;
+        }
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            background: #e9ecef;
+            border-radius: 5px;
+        }
+        .action-display {
+            font-size: 18px;
+            font-weight: bold;
+            color: #28a745;
+        }
+        .instructions {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 BotWar Controller</h1>
+        
+        <div class="instructions">
+            <h3>Instructions:</h3>
+            <ul>
+                <li><strong>Arrow Keys:</strong> Move the bot (UP, DOWN, LEFT, RIGHT)</li>
+                <li><strong>Spacebar:</strong> Stay in place</li>
+                <li><strong>C:</strong> Collect items</li>
+                <li><strong>A:</strong> Attack</li>
+                <li><strong>N:</strong> Do nothing</li>
+            </ul>
+        </div>
+
+        <div class="controls">
+            <button class="control-btn" onclick="sendKey('ArrowUp')">⬆️ UP</button>
+            <button class="control-btn center-btn" onclick="sendKey(' ')">⏸️ STAY</button>
+            <button class="control-btn" onclick="sendKey('c')">📦 COLLECT</button>
+            
+            <button class="control-btn" onclick="sendKey('ArrowLeft')">⬅️ LEFT</button>
+            <button class="control-btn center-btn" onclick="sendKey('n')">❌ NONE</button>
+            <button class="control-btn" onclick="sendKey('ArrowRight')">➡️ RIGHT</button>
+            
+            <div></div>
+            <button class="control-btn center-btn" onclick="sendKey('ArrowDown')">⬇️ DOWN</button>
+            <button class="control-btn" onclick="sendKey('a')">⚔️ ATTACK</button>
+        </div>
+
+        <div class="status">
+            <h3>Current Bot Action:</h3>
+            <div class="action-display" id="currentAction">STAY / NONE</div>
+        </div>
+
+        <div class="status">
+            <h3>Last Response:</h3>
+            <pre id="lastResponse">No response yet</pre>
+        </div>
+
+        <button onclick="getCurrentAction()" style="padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            🔄 Get Current Action
+        </button>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3000';
+
+        async function sendKey(key) {
+            try {
+                const response = await fetch(`${API_BASE}/keyboard`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ key })
+                });
+                
+                const data = await response.json();
+                document.getElementById('lastResponse').textContent = JSON.stringify(data, null, 2);
+                
+                // Update current action display
+                if (data.success) {
+                    updateActionDisplay(data.result.currentMoveAction, data.result.currentGameAction);
+                }
+            } catch (error) {
+                document.getElementById('lastResponse').textContent = `Error: ${error.message}`;
+            }
+        }
+
+        async function getCurrentAction() {
+            try {
+                const response = await fetch(`${API_BASE}/action`);
+                const data = await response.json();
+                document.getElementById('lastResponse').textContent = JSON.stringify(data, null, 2);
+                updateActionDisplay(data.move, data.action);
+            } catch (error) {
+                document.getElementById('lastResponse').textContent = `Error: ${error.message}`;
+            }
+        }
+
+        function updateActionDisplay(move, action) {
+            document.getElementById('currentAction').textContent = `${move} / ${action}`;
+        }
+
+        // Keyboard event listeners
+        document.addEventListener('keydown', (event) => {
+            event.preventDefault();
+            
+            const key = event.key;
+            const validKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ', 'c', 'a', 'n'];
+            
+            if (validKeys.includes(key)) {
+                sendKey(key);
+            }
+        });
+
+        // Initial action display
+        getCurrentAction();
+    </script>
+</body>
+</html> 

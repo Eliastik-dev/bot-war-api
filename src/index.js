@@ -8,10 +8,12 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.static('public'));
 
 // Routes
 app.get('/action', gameController.getAction);
 app.post('/command', gameController.postCommand);
+app.post('/keyboard', gameController.postKeyboard);
 
 // Health check route
 app.get('/health', (req, res) => {

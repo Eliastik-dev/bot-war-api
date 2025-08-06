@@ -6,13 +6,25 @@ class BotLogic {
     this.lastAction = 'STAY';
     this.lastMoveAction = 'STAY';
     this.lastGameAction = 'NONE';
+    this.currentMoveAction = 'STAY'; // Current move action from keyboard
+    this.currentGameAction = 'NONE'; // Current game action
     
     // Available actions
     this.moveActions = ['UP', 'DOWN', 'LEFT', 'RIGHT', 'STAY'];
     this.actionActions = ['COLLECT', 'NONE', 'ATTACK'];
   }
 
-  // Get the next move action for the bot
+  // Get the current move action (from keyboard input)
+  getCurrentMoveAction() {
+    return this.currentMoveAction;
+  }
+
+  // Get the current game action
+  getCurrentGameAction() {
+    return this.currentGameAction;
+  }
+
+  // Get the next move action for the bot (random - for testing)
   getNextMoveAction() {
     // Pick a random move action
     const moveAction = this.moveActions[Math.floor(Math.random() * this.moveActions.length)];
@@ -20,7 +32,7 @@ class BotLogic {
     return moveAction;
   }
 
-  // Get the next game action for the bot
+  // Get the next game action for the bot (random - for testing)
   getNextGameAction() {
     // Pick a random game action
     const gameAction = this.actionActions[Math.floor(Math.random() * this.actionActions.length)];
@@ -42,6 +54,44 @@ class BotLogic {
       this.lastAction = gameAction;
       return gameAction;
     }
+  }
+
+  // Process keyboard input (arrow keys)
+  processKeyboardInput(key) {
+    // Map keyboard keys to move actions
+    const keyMap = {
+      'ArrowUp': 'UP',
+      'ArrowDown': 'DOWN',
+      'ArrowLeft': 'LEFT',
+      'ArrowRight': 'RIGHT',
+      ' ': 'STAY', // Spacebar for stay
+      'c': 'COLLECT',
+      'a': 'ATTACK',
+      'n': 'NONE'
+    };
+
+    const moveAction = keyMap[key];
+    if (moveAction) {
+      if (this.moveActions.includes(moveAction)) {
+        // It's a move action
+        this.currentMoveAction = moveAction;
+        this.lastMoveAction = moveAction;
+        this.lastAction = moveAction;
+      } else if (this.actionActions.includes(moveAction)) {
+        // It's a game action
+        this.currentGameAction = moveAction;
+        this.lastGameAction = moveAction;
+        this.lastAction = moveAction;
+      }
+    }
+
+    return {
+      position: this.position,
+      score: this.score,
+      currentMoveAction: this.currentMoveAction,
+      currentGameAction: this.currentGameAction,
+      message: `Keyboard input processed: ${key} -> ${moveAction || 'unknown'}`
+    };
   }
 
   // Process a command from the game
