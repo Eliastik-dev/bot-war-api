@@ -10,7 +10,7 @@
             max-width: 600px;
             margin: 50px auto;
             padding: 20px;
-            background-color: #f5f5f5;
+            background: #f5f5f5;
         }
         .container {
             background: white;
@@ -19,7 +19,6 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         h1 {
-            color: #333;
             text-align: center;
             margin-bottom: 30px;
         }
@@ -38,14 +37,9 @@
             border-radius: 8px;
             font-size: 18px;
             cursor: pointer;
-            transition: background 0.2s;
         }
-        .key:hover {
-            background: #0056b3;
-        }
-        .key:active {
-            background: #004085;
-        }
+        .key:hover { background: #0056b3; }
+        .key:active { background: #004085; }
         .status {
             margin: 20px 0;
             padding: 15px;
@@ -64,17 +58,9 @@
             border-radius: 5px;
             margin-top: 20px;
         }
-        .instructions h3 {
-            margin-top: 0;
-            color: #495057;
-        }
-        .instructions ul {
-            margin: 10px 0;
-            padding-left: 20px;
-        }
-        .instructions li {
-            margin: 5px 0;
-        }
+        .instructions h3 { margin-top: 0; }
+        .instructions ul { margin: 10px 0; padding-left: 20px; }
+        .instructions li { margin: 5px 0; }
     </style>
 </head>
 <body>
@@ -82,7 +68,6 @@
         <h1>🎮 BotWar Controller</h1>
         
         <div class="status">
-            <div>Current Action:</div>
             <div class="current-action" id="currentAction">STAY - COLLECT</div>
         </div>
 
@@ -101,90 +86,58 @@
         </div>
 
         <div class="instructions">
-            <h3>How to use:</h3>
+            <h3>Controls:</h3>
             <ul>
-                <li><strong>Arrow keys</strong> or <strong>click buttons</strong> to control the bot</li>
-                <li>The bot will move in the direction you choose</li>
-                <li>Action is automatically set to "COLLECT" to gather points</li>
-                <li>Use "STAY" to remain in place</li>
+                <li><strong>Arrow keys</strong> or <strong>click buttons</strong> to move</li>
+                <li><strong>Spacebar</strong> to stay in place</li>
             </ul>
         </div>
     </div>
 
     <script>
-        // Current bot state
         let currentMove = 'STAY';
         let currentAction = 'COLLECT';
 
-        // Update the display
         function updateDisplay() {
             document.getElementById('currentAction').textContent = `${currentMove} - ${currentAction}`;
         }
 
-        // Send action to backend
         async function sendAction(move) {
             currentMove = move;
             updateDisplay();
             
             try {
-                const response = await fetch('/action', {
+                await fetch('/action', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        move: currentMove,
-                        action: currentAction
-                    })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ move: currentMove, action: currentAction })
                 });
-                
-                if (response.ok) {
-                    console.log('Action sent successfully');
-                } else {
-                    console.error('Failed to send action');
-                }
             } catch (error) {
                 console.error('Error sending action:', error);
             }
         }
 
-        // Handle button clicks
         document.querySelectorAll('.key').forEach(button => {
             button.addEventListener('click', () => {
-                const move = button.getAttribute('data-move');
-                sendAction(move);
+                sendAction(button.getAttribute('data-move'));
             });
         });
 
-        // Handle keyboard input
         document.addEventListener('keydown', (event) => {
-            let move = null;
+            const moves = {
+                'ArrowUp': 'UP',
+                'ArrowDown': 'DOWN',
+                'ArrowLeft': 'LEFT',
+                'ArrowRight': 'RIGHT',
+                ' ': 'STAY'
+            };
             
-            switch(event.key) {
-                case 'ArrowUp':
-                    move = 'UP';
-                    break;
-                case 'ArrowDown':
-                    move = 'DOWN';
-                    break;
-                case 'ArrowLeft':
-                    move = 'LEFT';
-                    break;
-                case 'ArrowRight':
-                    move = 'RIGHT';
-                    break;
-                case ' ':
-                    move = 'STAY';
-                    event.preventDefault();
-                    break;
-            }
-            
-            if (move) {
-                sendAction(move);
+            if (moves[event.key]) {
+                event.preventDefault();
+                sendAction(moves[event.key]);
             }
         });
 
-        // Initialize display
         updateDisplay();
     </script>
 </body>
